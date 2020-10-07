@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 
 namespace ProyectoFinal.Models.Entities
 {
-    public class Departamento
+    public class HistorialIncidente
     {
-        public int DepartamentoId { get; set; }
-        public string Nombre { get; set; }
+        public int HistorialIncidenteId { get; set; }
+        public int IncidenteId { get; set; }
+        public string Comentario { get; set; }
         public string Estatus { get; set; }
         public bool Borrado { get; set; }
         public DateTime FechaRegistro { get; set; }

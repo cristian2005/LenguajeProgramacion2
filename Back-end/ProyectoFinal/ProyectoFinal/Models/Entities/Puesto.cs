@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace ProyectoFinal.Models.Entities
 {
-    public class Departamento
+    public class Puesto
     {
+        public int PuestoId { get; set; }
         public int DepartamentoId { get; set; }
         public string Nombre { get; set; }
         public string Estatus { get; set; }

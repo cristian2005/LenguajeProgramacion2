@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace ProyectoFinal.Models.Entities
 {
-    public class Departamento
+    public class Prioridad
     {
-        public int DepartamentoId { get; set; }
+        public int PrioridadId { get; set; }
+        public int SlaId { get; set; }
         public string Nombre { get; set; }
         public string Estatus { get; set; }
         public bool Borrado { get; set; }
