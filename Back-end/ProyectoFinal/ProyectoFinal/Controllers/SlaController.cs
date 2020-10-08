@@ -9,7 +9,7 @@ using ProyectoFinal.Repositorios;
 
 namespace ProyectoFinal.Controllers
 {
-    [Route("api/[sla]")]
+    [Route("api/sla")]
     [ApiController]
     public class SlaController : ControllerBase
     {

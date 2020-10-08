@@ -9,7 +9,7 @@ using ProyectoFinal.Repositorios;
 
 namespace ProyectoFinal.Controllers
 {
-    [Route("api/[usuarios]")]
+    [Route("api/usuarios")]
     [ApiController]
     public class UsuariosController : ControllerBase
     {
@@ -18,8 +18,8 @@ namespace ProyectoFinal.Controllers
         {
             repositorio = new RepositorioDeUsuarios();
         }
-        [HttpGet]
-        public IEnumerable<UsuarioId> Get()
+        [HttpGet("login")]
+        public IEnumerable<UsuarioId> Get(dynamic dynamic)
         {
             var parametros1 = new ParametrosDeQuery<UsuarioId>(1, 200);
             parametros1.OrderBy = x => x.Id;
@@ -28,19 +28,20 @@ namespace ProyectoFinal.Controllers
             var result = repositorio.EncontrarPor(parametros1);
             return result;
         }
-        [HttpGet]
+        [HttpGet("eliminar")]
+
         public OperationResult Delete(int id)
         {
             var result = repositorio.Eliminar(id);
             return result;
         }
-        [HttpPost]
+        [HttpPost("registrar")]
         public OperationResult Insert([FromBody] UsuarioId usuario)
         {
             var result = repositorio.Agregar(usuario);
             return result;
         }
-        [HttpPost]
+        [HttpPost("actualizar")]
         public OperationResult Update([FromBody] UsuarioId usuario)
         {
             var result = repositorio.Actualizar(usuario);

@@ -9,7 +9,7 @@ using ProyectoFinal.Repositorios;
 
 namespace ProyectoFinal.Controllers
 {
-    [Route("api/[historialincidentes]")]
+    [Route("api/historialincidentes")]
     [ApiController]
     public class HistorialIncidentesController : ControllerBase
     {

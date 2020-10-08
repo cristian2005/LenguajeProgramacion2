@@ -9,7 +9,7 @@ using ProyectoFinal.Repositorios;
 
 namespace ProyectoFinal.Controllers
 {
-    [Route("api/[puestos]")]
+    [Route("api/puestos")]
     [ApiController]
     public class PuestosController : ControllerBase
     {
