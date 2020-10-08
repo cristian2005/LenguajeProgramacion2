@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ProyectoFinal.Models.Entities
 {
-    public class Puesto
+    public class Puesto:Entidad
     {
         public int PuestoId { get; set; }
         public int DepartamentoId { get; set; }
@@ -15,6 +15,18 @@ namespace ProyectoFinal.Models.Entities
         public DateTime FechaRegistro { get; set; }
         public DateTime FechaModificacion { get; set; }
         public int CreadoPor { get; set; }
-        public int ModificadoPor { get; set; }
+        public int? ModificadoPor { get; set; }
+
+        // Navigation properties
+        public virtual UsuarioId Usuario { get; set; }
+        public virtual UsuarioId Usuario1 { get; set; }
+
+        public virtual Departamento Departamento { get; set; }
+
+
+        // Navigation property
+        public virtual ICollection<UsuarioId> Usuarios { get; set; }
+
+
     }
 }

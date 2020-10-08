@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ProyectoFinal.Models.Entities
 {
-    public class Sla
+    public class Sla:Entidad
     {
         public int SlaId { get; set; }
         public string Descripcion { get; set; }
@@ -15,6 +15,14 @@ namespace ProyectoFinal.Models.Entities
         public DateTime FechaRegistro { get; set; }
         public DateTime FechaModificacion { get; set; }
         public int CreadoPor { get; set; }
-        public int ModificadoPor { get; set; }
+        public int? ModificadoPor { get; set; }
+
+        // Navigation properties
+        public virtual UsuarioId Usuario { get; set; }
+        public virtual UsuarioId Usuario1 { get; set; }
+
+
+        // Navigation property
+        public virtual ICollection<Prioridad> Prioridades { get; set; }
     }
 }

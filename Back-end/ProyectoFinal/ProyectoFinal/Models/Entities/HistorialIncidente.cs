@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ProyectoFinal.Models.Entities
 {
-    public class HistorialIncidente
+    public class HistorialIncidente:Entidad
     {
         public int HistorialIncidenteId { get; set; }
         public int IncidenteId { get; set; }
@@ -15,6 +15,13 @@ namespace ProyectoFinal.Models.Entities
         public DateTime FechaRegistro { get; set; }
         public DateTime FechaModificacion { get; set; }
         public int CreadoPor { get; set; }
-        public int ModificadoPor { get; set; }
+        public int? ModificadoPor { get; set; }
+
+        // Navigation properties
+        public virtual UsuarioId Usuario { get; set; }
+        public virtual UsuarioId Usuario1 { get; set; }
+
+        public virtual Incidente Incidente { get; set; }
+
     }
 }
