@@ -27,5 +27,23 @@ namespace ProyectoFinal.Controllers
             var result = repositorio.EncontrarPor(parametros1);
            return result;
         }
+        [HttpGet]
+        public OperationResult Delete(int id)
+        {
+            var result = repositorio.Eliminar(id);
+            return result;
+        }
+        [HttpPost]
+        public OperationResult Insert([FromBody] Departamento departamento)
+        {
+            var result = repositorio.Agregar(departamento);
+            return result;
+        }
+        [HttpPost]
+        public OperationResult Update([FromBody] Departamento departamento)
+        {
+            var result = repositorio.Actualizar(departamento);
+            return result;
+        }
     }
 }
