@@ -1,5 +1,5 @@
 $('#clientes').removeAttr('disabled');
-var base_url="https://localhost:12345/api/";
+var base_url="http://localhost:12345/api/";
 
 /*var sesion=sessionStorage.getItem("iduser");
 console.log(window.location.href.toString().search("usuarios/login.html"))
@@ -97,23 +97,24 @@ document.addEventListener('readystatechange', event => {
  */
 function AjaxServer(url,datos,tipo,tipo_data,text_swal="Procesando..."){
   
-return $.ajax({
-  type: tipo,
-  url: url,
-  data: datos,
-  dataType: tipo_data,
-  beforeSend:function(){
-    swal({
-  icon: "../../imagenes/loader.gif",
-  text:text_swal,
-  button: false,
-  closeOnClickOutside: false
-});
-  },
-  success:function(){
-    swal.close();
-  }
-});
+  return $.ajax({
+    type: tipo,
+    url: url,
+    data: JSON.stringify(datos),
+    contentType: "application/json",
+    dataType: tipo_data,
+    beforeSend:function(){
+      swal({
+    icon: "../img/loader.gif",
+    text:text_swal,
+    button: false,
+    closeOnClickOutside: false
+  });
+    },
+    success:function(){
+      swal.close();
+    }
+  });
 }
 //Funcion que muestra una alerta cuando da un error inesperado
 function ErrorInesperado(titulo="Error inesperado",descripcion="Ha ocurrido un error inesperado, intentelo más tarde o contáctese con el administrador."){

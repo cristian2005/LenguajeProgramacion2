@@ -73,7 +73,7 @@
             swal("Datos vacios","Llene todo los datos","warning");
             return false;
         }
-        AjaxServer(base_url+"usuarios/login",data ,"get","json","Iniciando...")
+        AjaxServer(base_url+"usuarios/login",data ,"post","json","Iniciando...")
             .then(function(resp){
             }).fail(function(error){
               ErrorInesperado();
