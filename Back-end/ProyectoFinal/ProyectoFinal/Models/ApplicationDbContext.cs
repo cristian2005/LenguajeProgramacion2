@@ -104,7 +104,7 @@ namespace ProyectoFinal.Models
                .WithOne(e => e.Usuario1).HasForeignKey(x => x.ModificadoPor).OnDelete(DeleteBehavior.NoAction).IsRequired(false);
 
             modelBuilder.Entity<Departamento>().HasMany(x => x.Puestos)
-               .WithOne(e => e.Departamento).HasForeignKey(x => x.PuestoId).OnDelete(DeleteBehavior.NoAction);
+               .WithOne(e => e.Departamento).HasForeignKey(x => x.DepartamentoId).OnDelete(DeleteBehavior.NoAction).IsRequired(false);
             modelBuilder.Entity<Departamento>().HasMany(x => x.Incidentes)
               .WithOne(e => e.Departamento).HasForeignKey(x => x.DepartamentoId).OnDelete(DeleteBehavior.NoAction);
 
