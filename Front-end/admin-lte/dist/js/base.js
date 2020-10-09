@@ -1,6 +1,11 @@
 $('#clientes').removeAttr('disabled');
 var base_url="https://localhost:12345/api/";
 
+/*var sesion=sessionStorage.getItem("iduser");
+console.log(window.location.href.toString().search("usuarios/login.html"))
+if (sesion===null && window.location.href.toString().search("usuarios/login.html")==-1) {
+  window.location="../admin-lte/usuarios/login.html";
+}*/
 /**
  * Funcion que redondea un entero.
  * @param {int} numero 
@@ -14,7 +19,6 @@ else{
  return redondeoEntero(numero+1);
 }
 }
-
 
 /**
  * Metodo que formatea un numero en miles.

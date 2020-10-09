@@ -171,16 +171,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-               <li class="nav-item ">
-                <a href="index.html" class="nav-link active">
+               <li class="nav-item">
+                <a href="index.html" class="nav-link">
                   <i class="nav-icon fas fa-suitcase"></i>
                   <p>
                     Departamentos
                   </p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="puestos.html" class="nav-link" active>
+              <li class="nav-item active">
+                <a href="puestos.html" class="nav-link" >
                   <i class="nav-icon fas fa-users"></i>
                   <p>
                     Puestos
@@ -204,7 +204,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <li class="nav-item">
-                <a href="prioridad.html" class="nav-link">
+                <a href="prioridad.html" class="nav-link active">
                   <i class="nav-icon fas fa-list-ol"></i>
                   <p>
                     Prioridad
@@ -241,7 +241,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Departamentos</h1>
+            <h1 class="m-0 text-dark">Prioridad</h1>
           </div><!-- /.col -->
          
         </div><!-- /.row -->
@@ -257,7 +257,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <div class="col-md-12">
             <div class="card card-primary collapsed-card">
               <div class="card-header">
-                <h3 class="card-title">Listado de Departamentos</h3>
+                <h3 class="card-title">Listado de prioridad</h3>
           
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
@@ -271,9 +271,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                  <thead>
                    <tr>
                      <th>Nombre</th>
-                     <th>Nombre</th>
-                     <th>Nombre</th>
-                     <th>Nombre</th>
+                     <th>Sla</th>
+                     <th>Estatus</th>
+                     <th>Fecha ult. modif.</th>
                      <th>Acciones</th>
                    </tr>
                  </thead>
@@ -281,7 +281,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
               <!-- /.card-body -->
               <div class="card-footer">
-                <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-outline btn-info">Agregar departamento</button>
+                <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-outline btn-info">Agregar prioridad</button>
               </div>
             </div>
           </div>
@@ -311,7 +311,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
       <!-- Modal Header -->
       <div class="modal-header">
-        <h4 class="modal-title">Administrar departamento</h4>
+        <h4 class="modal-title">Administrar sla</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
 
@@ -319,8 +319,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="modal-body">
         <form id="form-departamento">
           <div class="form-group">
-            <label for="exampleInputEmail1">Nombre del departamento</label>
+            <label for="exampleInputEmail1">Nombre</label>
             <input type="text" class="form-control" id="txtnombre" placeholder="Nombre">
+          </div>
+          <div class="form-group">
+            <label for="selectsla">Sla</label>
+            <select name="sla" id="selectsla" class="form-control">
+                <option value="0">Seleccione un sla</option>
+            </select>
           </div>
           <div class="form-check">
             <input type="checkbox" name="status" class="form-check-input" id="exampleCheck1">
