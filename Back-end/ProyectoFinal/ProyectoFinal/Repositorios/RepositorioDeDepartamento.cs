@@ -1,4 +1,5 @@
 ﻿using ProyectoFinal.Contractos;
+using ProyectoFinal.Models;
 using ProyectoFinal.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,23 @@ namespace ProyectoFinal.Repositorios
         public void AccionesPersonalizadas(Departamento departamento)
         {
             throw new NotImplementedException();
+        }
+        public List<Departamento> GetDepartamentos()
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+
+                  var  result= db.Departamentos.ToList();
+                    return result;
+                }
+            }
+            catch (Exception err)
+            {
+                return null;
+            }
+
         }
     }
 }

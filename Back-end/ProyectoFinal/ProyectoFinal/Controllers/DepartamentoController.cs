@@ -17,7 +17,7 @@ namespace ProyectoFinal.Controllers
         {
             repositorio = new RepositorioDeDepartamento();
         }
-        [HttpGet]
+        [HttpGet("getdepartamento")]
         public IEnumerable<Departamento> Get()
         {
             var parametros1 = new ParametrosDeQuery<Departamento>(1, 200);
@@ -27,22 +27,35 @@ namespace ProyectoFinal.Controllers
             var result = repositorio.EncontrarPor(parametros1);
            return result;
         }
-        [HttpGet]
-        public OperationResult Delete(int id)
+        [HttpPost("eliminardepartamento")]
+        public OperationResult Eliminar([FromBody] Departamento departamento)
         {
-            var result = repositorio.Eliminar(id);
+            var departamento_old = repositorio.ObtenerPorId(departamento.Id);
+            departamento_old.Borrado = true;
+
+            var result = repositorio.Actualizar(departamento_old);
             return result;
         }
-        [HttpPost]
+        [HttpPost("insertardepartamento")]
         public OperationResult Insert([FromBody] Departamento departamento)
         {
+            departamento.FechaRegistro = DateTime.Now;
+            departamento.FechaModificacion = DateTime.Now;
+
             var result = repositorio.Agregar(departamento);
             return result;
         }
-        [HttpPost]
+        [HttpPost("actualizardepartamento")]
         public OperationResult Update([FromBody] Departamento departamento)
         {
-            var result = repositorio.Actualizar(departamento);
+            var departamento_old = repositorio.ObtenerPorId(departamento.Id);
+
+            departamento_old.FechaModificacion = DateTime.Now;
+            departamento_old.ModificadoPor = departamento.ModificadoPor;
+            departamento_old.Estatus = departamento.Estatus;
+            departamento_old.Nombre = departamento.Nombre;
+
+            var result = repositorio.Actualizar(departamento_old);
             return result;
         }
     }

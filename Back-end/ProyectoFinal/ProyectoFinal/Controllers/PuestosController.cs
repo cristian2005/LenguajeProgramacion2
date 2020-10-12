@@ -14,18 +14,25 @@ namespace ProyectoFinal.Controllers
     public class PuestosController : ControllerBase
     {
         private IRepositorio<Puesto> repositorio;
+        private RepositorioDeDepartamento repositorio_departamento;
+
         public PuestosController()
         {
             repositorio = new RepositorioDePuesto();
+            repositorio_departamento = new RepositorioDeDepartamento();
         }
-        [HttpGet]
-        public IEnumerable<Puesto> Get()
+        [HttpGet("getpuestos")]
+        public dynamic Get()
         {
             var parametros1 = new ParametrosDeQuery<Puesto>(1, 200);
             parametros1.OrderBy = x => x.Id;
             parametros1.Where = x => x.Borrado == false;
 
-            var result = repositorio.EncontrarPor(parametros1);
+            var result = repositorio.EncontrarPor(parametros1).ToList();
+
+            var departamentos = new List<Departamento>();
+            departamentos = repositorio_departamento.GetDepartamentos();
+               
             return result;
         }
         [HttpGet]
@@ -34,10 +41,13 @@ namespace ProyectoFinal.Controllers
             var result = repositorio.Eliminar(id);
             return result;
         }
-        [HttpPost]
-        public OperationResult Insert([FromBody] Puesto usuario)
+        [HttpPost("insertarpuestos")]
+        public OperationResult Insert([FromBody] Puesto puesto)
         {
-            var result = repositorio.Agregar(usuario);
+            puesto.FechaRegistro = DateTime.Now;
+            puesto.FechaModificacion = DateTime.Now;
+
+            var result = repositorio.Agregar(puesto);
             return result;
         }
         [HttpPost]

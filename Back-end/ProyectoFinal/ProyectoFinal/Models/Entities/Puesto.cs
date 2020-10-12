@@ -27,6 +27,5 @@ namespace ProyectoFinal.Models.Entities
         // Navigation property
         public virtual ICollection<UsuarioId> Usuarios { get; set; }
 
-
     }
 }

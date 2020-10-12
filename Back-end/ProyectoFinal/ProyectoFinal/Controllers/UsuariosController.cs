@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using ProyectoFinal.Models.Entities;
 using ProyectoFinal.Repositorios;
+using Newtonsoft.Json.Linq;
 
 namespace ProyectoFinal.Controllers
 {
@@ -18,15 +20,17 @@ namespace ProyectoFinal.Controllers
         {
             repositorio = new RepositorioDeUsuarios();
         }
-        [HttpGet("login")]
-        public IEnumerable<UsuarioId> Get(dynamic dynamic)
+        [HttpPost("login")]
+        public int login([FromBody] UsuarioId usuario)
         {
-            var parametros1 = new ParametrosDeQuery<UsuarioId>(1, 200);
+            var parametros1 = new ParametrosDeQuery<UsuarioId>(1, 1);
             parametros1.OrderBy = x => x.Id;
-            parametros1.Where = x => x.Borrado == false;
+            parametros1.Where = x => x.Borrado == false && x.Correo==usuario.Correo && x.Contrasena==usuario.Contrasena;
 
             var result = repositorio.EncontrarPor(parametros1);
-            return result;
+
+            return (result.ToList().Count==1)?result.FirstOrDefault().Id:0;
+
         }
         [HttpGet("eliminar")]
 

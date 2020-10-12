@@ -1,11 +1,16 @@
 $('#clientes').removeAttr('disabled');
-var base_url="https://localhost:12345/api/";
+var base_url="http://localhost:12345/api/";
+$('#exampleCheck1').change(function (e) { 
+    if (this.checked==true) 
+        $('#exampleCheck1').val("A");
+      else 
+    $('#exampleCheck1').val("I");
 
-/*var sesion=sessionStorage.getItem("iduser");
-console.log(window.location.href.toString().search("usuarios/login.html"))
+});
+var sesion=sessionStorage.getItem("iduser");
 if (sesion===null && window.location.href.toString().search("usuarios/login.html")==-1) {
   window.location="../admin-lte/usuarios/login.html";
-}*/
+}
 /**
  * Funcion que redondea un entero.
  * @param {int} numero 
@@ -96,15 +101,37 @@ document.addEventListener('readystatechange', event => {
  * @param {string} text_swal Descripcion del swal.
  */
 function AjaxServer(url,datos,tipo,tipo_data,text_swal="Procesando..."){
-  
+  if(datos==null)
+  {
+    return $.ajax({
+        type: tipo,
+        url: url,
+        contentType: "application/json",
+        dataType: tipo_data,
+        
+        beforeSend:function(){
+          swal({
+        icon: "dist/img/loader.gif",
+        text:text_swal,
+        button: false,
+        closeOnClickOutside: false
+      });
+        },
+        success:function(){
+          swal.close();
+        }
+      });
+  }else
 return $.ajax({
   type: tipo,
   url: url,
-  data: datos,
+  contentType: "application/json",
+  data : JSON.stringify(datos),
   dataType: tipo_data,
+  
   beforeSend:function(){
     swal({
-  icon: "../../imagenes/loader.gif",
+  icon: "dist/img/loader.gif",
   text:text_swal,
   button: false,
   closeOnClickOutside: false
@@ -371,7 +398,7 @@ for (let index = 0; index < clase.length; index++) {
      if(i+1==columns.length && acciones!=null && acciones_personalizada==null)
      {
        var modelo=JSON.stringify(t);
-       html+="<td> <a title='Eliminar' data-id='"+t[acciones[2]]+"' onclick='"+modal_form[2]+"(event)' style='padding:5px; cursor:pointer; color:red;' class='fa fa-remove'></a> <a title='Editar'  data-modelo='"+modelo+"' data-id='"+t[acciones[2]]+"' data-modal="+modal_form[1]+" data-form="+modal_form[0]+" onclick='EditarData(event)'' style='padding:5px; cursor:pointer;'' class='fa fa-edit'></a></td>";
+       html+="<td> <a title='Eliminar' data-id='"+t[acciones[2]]+"' onclick='"+modal_form[2]+"(event)' style='padding:5px; cursor:pointer; color:red;' class='fa fa-eraser'></a> <a title='Editar'  data-modelo='"+modelo+"' data-id='"+t[acciones[2]]+"' data-modal="+modal_form[1]+" data-form="+modal_form[0]+" onclick='EditarData(event)'' style='padding:5px; cursor:pointer;'' class='fa fa-edit'></a></td>";
      }
 
      if(i+1==columns.length && acciones==null && acciones_personalizada!=null)
@@ -426,7 +453,9 @@ for (let index = 0; index < clase.length; index++) {
     return object;
   }
 
-
+  function Remove_CaracteresJson(json){
+    return json.replace(new RegExp("/","g"),"\\\\").replace(new RegExp("\t","g"),"").replace(new RegExp("\n","g"),"").replace(new RegExp("\b","g"),"").replace(new RegExp("\r","g"),"")
+  }
   /**
    * Funcion que rellena los datos a un formulario especifico. Tem encuenta que para que se llenen las columnas del objeto, deben
    * llamarse igual al atributo name de los elementos de la etiqueta form. Eje <input name='value'/> =objecto.value

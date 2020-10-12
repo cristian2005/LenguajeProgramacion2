@@ -21,10 +21,24 @@ namespace ProyectoFinal
         }
 
         public IConfiguration Configuration { get; }
+        readonly string MyAllowSpecificOrigin = "_myAllowSpecificOrigin";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("_myAllowSpecificOrigin",
+                    builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+
+                    );
+            });
+            services.AddSignalR()
+    .AddNewtonsoftJsonProtocol();
             services.AddControllers();
         }
 
@@ -39,6 +53,8 @@ namespace ProyectoFinal
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(MyAllowSpecificOrigin);
 
             app.UseAuthorization();
 
