@@ -267,13 +267,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-               <table class="table table-condensed tabla">
+               <table id="tablauser" class="table table-condensed tabla">
                  <thead>
                    <tr>
                      <th>Nombre</th>
                      <th>Apellido</th>
                      <th>Cedula</th>
                      <th>Correo</th>
+                     <th>Ultima fecha modf</th>
                      <th>Acciones</th>
                    </tr>
                  </thead>
@@ -343,17 +344,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div>
             <div class="col-md-4">
               <label for="">Fecha Nacimiento</label>
-              <input type="text" name="fecha" id="txtfecha" class="form-control">
+              <input type="date" name="fecha_Nacimiento" id="txtfecha" class="form-control">
             </div>
           </div>
           <div class="row">
             <div class="col-md-4">
               <label for="">Nombre de usuario</label>
-              <input type="text" name="usuario" id="txtusuario" class="form-control">
+              <input type="text" name="nombreUsuario" id="txtusuario" class="form-control">
             </div>
             <div class="col-md-4">
               <label for="">Contraseña</label>
-              <input type="password" name="pass" id="txtpass" class="form-control">
+              <input type="password" name="contrasena" id="txtpass" class="form-control">
             </div>
             <div class="col-md-4">
               <label for="selectdep">Nombre del puesto</label>
@@ -405,6 +406,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="dist/js/base.js"></script>
 
+<script src="../node_modules/linqjs/dist/linq.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="dist/js/base.js"></script>
+
 <script>
   
   $(function () {
@@ -420,8 +425,100 @@ scratch. This page gets rid of all links and provides the needed markup only.
     });
   });
  
+  AjaxServer(base_url+"usuarios/obtener",null,"get","json","Cargando...")
+            .then(function(resp){
 
+              console.log(resp)
+             FillTable("tablauser",["nombre","apellido","cedula","correo","fechaModificacion"],
+              resp.usuario,['delete','update','id'],['form-departamento','myModal','Eliminar']);
+              RellenarSelectPicker("selectpuesto",resp.puesto,"nombre",true,"id");
+
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
+ var id=0;
+function EditarData(e){
+
+  $('#myModal').modal('show');
+  var data=JSON.parse(Remove_CaracteresJson(e.target.dataset.modelo));
+  var estatus=data.estatus;
+  id=data.id;
+  if (estatus=="A") {
+    $('#exampleCheck1').prop("checked",true);
+  }
+  else
+  $('#exampleCheck1').prop("checked",false);
+
+  FillData("form-departamento",e.target.dataset.modelo,"myModal");
+}
+function Eliminar(e){
+
+  Confirmacion("Eliminar usuarios","¿Estás seguro que desea eliminar este usuarios?","info",function(r){
+if(r){
+    AjaxServer(base_url+"usuarios/eliminar",{Id:parseInt(e.target.dataset.id)},"post","json",
+    "Elimimando usuarios").then(function(resp){
+     
+        if(resp.states){
+          swal("Eliminar usuarios","usuarios eliminado con exito!","success");
+          window.location.reload();
+        }
+    
+      }).fail(function(error){
+        console.log(error);
+      ErrorInesperado();
+    })
+}
+},true,"Eliminar","Cerrar")
+}
+function guardar(){
+
+ if (id==0) {
+   
+  data={Estatus:$('#exampleCheck1').val(),Nombre:$('#txtnombre').val(),Apellido:$('#txtapellido').val(),
+  Cedula:$('#txtcedula').val(),Correo:$('#txtcorreo').val(),Telefono:$('#txttelefono').val(),Fecha_Nacimiento:"2020-10-13 14:44:56.8947595",
+  NombreUsuario:$('#txtusuario').val(),Contrasena:$('#txtpass').val(),
+  "PuestoId":parseInt($('#selectpuesto').val())
+  ,CreadoPor:parseInt(sessionStorage.getItem("iduser"))};
+
+  AjaxServer(base_url+"usuarios/insertar",data ,"post","json","Iniciando...")
+            .then(function(resp){
+              if (resp.states) {
+               swal("Crear usuarios","usuarios creado con exito!","success");
+               window.location.reload();
+              }
+              else
+              swal("Crear usuarios","Error al crear","warning");
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
+ }
+ else{
+
+  data={Id:id,Nombre:$('#txtnombre').val(),Estatus:$('#exampleCheck1').val(),
+  Apellido:$('#txtapellido').val(),
+  Cedula:$('#txtcedula').val(),Correo:$('#txtcorreo').val(),Telefono:$('#txttelefono').val(),
+  NombreUsuario:$('#txtusuario').val(),Contrasena:$('#txtpass').val(),
+  "PuestoId":parseInt($('#selectpuesto').val())
+  ,ModificadoPor:parseInt(sessionStorage.getItem("iduser"))};
+
+  AjaxServer(base_url+"usuarios/actualizar",data ,"post","json","Iniciando...")
+            .then(function(resp){
+              if (resp.states) {
+               swal("Actualizar usuarios","usuarios actualizado con exito!","success");
+               window.location.reload();
+              }
+              else
+              swal("Actualizar usuarios","Error al actualizar usuarios","warning");
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
+ }
+}
 </script>
+
 
 </body>
 </html>

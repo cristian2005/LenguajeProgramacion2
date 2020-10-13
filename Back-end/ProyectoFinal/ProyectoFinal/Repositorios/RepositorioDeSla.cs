@@ -1,4 +1,5 @@
 ﻿using ProyectoFinal.Contractos;
+using ProyectoFinal.Models;
 using ProyectoFinal.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,23 @@ namespace ProyectoFinal.Repositorios
         {
             throw new NotImplementedException();
         }
+        public List<Sla> GetSla()
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+
+                    var result = db.Slas.ToList();
+                    return result;
+                }
+            }
+            catch (Exception err)
+            {
+                return null;
+            }
+
+        }
+        
     }
 }

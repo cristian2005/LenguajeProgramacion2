@@ -541,7 +541,7 @@ var contador=0;
   });
 
   if(agregar)
-  $('#'+selectId).html(html).selectpicker("refresh");
+  $('#'+selectId).html(html);
 
   return html;
  }

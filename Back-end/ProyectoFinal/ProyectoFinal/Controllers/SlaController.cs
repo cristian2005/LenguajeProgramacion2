@@ -18,7 +18,7 @@ namespace ProyectoFinal.Controllers
         {
             repositorio = new RepositorioDeSla();
         }
-        [HttpGet]
+        [HttpGet("getsla")]
         public IEnumerable<Sla> Get()
         {
             var parametros1 = new ParametrosDeQuery<Sla>(1, 200);
@@ -28,22 +28,40 @@ namespace ProyectoFinal.Controllers
             var result = repositorio.EncontrarPor(parametros1);
             return result;
         }
-        [HttpGet]
-        public OperationResult Delete(int id)
+        [HttpPost]
+        public OperationResult Delete([FromBody] Sla data)
         {
-            var result = repositorio.Eliminar(id);
+            var sla_old = repositorio.ObtenerPorId(data.Id);
+            sla_old.Borrado = true;
+
+            var result = repositorio.Actualizar(sla_old);
             return result;
         }
-        [HttpPost]
+        [HttpPost("insertar")]
+
         public OperationResult Insert([FromBody] Sla data)
         {
+            data.FechaRegistro = DateTime.Now;
+            data.FechaModificacion = DateTime.Now;
+
             var result = repositorio.Agregar(data);
             return result;
         }
-        [HttpPost]
+        [HttpPost("actualizar")]
+
         public OperationResult Update([FromBody] Sla data)
         {
-            var result = repositorio.Actualizar(data);
+
+            var puesto_old = repositorio.ObtenerPorId(data.Id);
+
+            puesto_old.FechaModificacion = DateTime.Now;
+            puesto_old.ModificadoPor = data.ModificadoPor;
+            puesto_old.Estatus = data.Estatus;
+            puesto_old.CantidadHoras = data.CantidadHoras;
+            puesto_old.Descripcion = data.Descripcion;
+
+
+            var result = repositorio.Actualizar(puesto_old);
             return result;
         }
     }

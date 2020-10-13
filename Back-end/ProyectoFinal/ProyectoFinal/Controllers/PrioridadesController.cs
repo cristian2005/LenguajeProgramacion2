@@ -14,36 +14,60 @@ namespace ProyectoFinal.Controllers
     public class PrioridadesController : ControllerBase
     {
         private IRepositorio<Prioridad> repositorio;
+        private RepositorioDeSla sla_respo;
+        
         public PrioridadesController()
         {
             repositorio = new RepositorioDePrioridad();
+            sla_respo = new RepositorioDeSla();
         }
-        [HttpGet]
-        public IEnumerable<Prioridad> Get()
+        [HttpGet("getprioridades")]
+        public dynamic Get()
         {
             var parametros1 = new ParametrosDeQuery<Prioridad>(1, 200);
             parametros1.OrderBy = x => x.Id;
             parametros1.Where = x => x.Borrado == false;
 
             var result = repositorio.EncontrarPor(parametros1);
-            return result;
+
+
+            var slas = new List<Sla>();
+            slas = sla_respo.GetSla();
+
+            return new { Prioridades = result, Sla = slas };
         }
-        [HttpGet]
-        public OperationResult Delete(int id)
+        [HttpPost("eliminar")]
+        public OperationResult Delete([FromBody] Prioridad data)
         {
-            var result = repositorio.Eliminar(id);
+            var prioridad_old = repositorio.ObtenerPorId(data.Id);
+            prioridad_old.Borrado = true;
+
+            var result = repositorio.Actualizar(prioridad_old);
             return result;
         }
-        [HttpPost]
+        [HttpPost("insertar")]
         public OperationResult Insert([FromBody] Prioridad data)
         {
+            data.FechaRegistro = DateTime.Now;
+            data.FechaModificacion = DateTime.Now;
+
             var result = repositorio.Agregar(data);
             return result;
         }
-        [HttpPost]
+        [HttpPost("actualizar")]
+
         public OperationResult Update([FromBody] Prioridad data)
         {
-            var result = repositorio.Actualizar(data);
+            var puesto_old = repositorio.ObtenerPorId(data.Id);
+
+            puesto_old.FechaModificacion = DateTime.Now;
+            puesto_old.ModificadoPor = data.ModificadoPor;
+            puesto_old.Estatus = data.Estatus;
+            puesto_old.Nombre = data.Nombre;
+            puesto_old.SlaId = data.SlaId;
+
+
+            var result = repositorio.Actualizar(puesto_old);
             return result;
         }
     }

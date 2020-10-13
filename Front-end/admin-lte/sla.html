@@ -180,10 +180,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <li class="nav-item active">
-                <a href="puestos.html" class="nav-link " >
+                <a href="sla.html" class="nav-link " >
                   <i class="nav-icon fas fa-users"></i>
                   <p>
-                    Puestos
+                    sla
                   </p>
                 </a>
               </li>
@@ -267,7 +267,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-               <table class="table table-condensed tabla">
+               <table id="tablesla" class="table table-condensed tabla">
                  <thead>
                    <tr>
                      <th>Descripcion</th>
@@ -324,7 +324,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </div>
           <div class="form-group">
             <label for="exampleInputEmail1">Cantidad de horas</label>
-            <input name="cantidad" class="form-control" id="txtcantidad" type="number"/>
+            <input name="cantidadHoras" class="form-control" id="txtcantidad" type="number"/>
           </div>
           <div class="form-check">
             <input type="checkbox" name="status" class="form-check-input" id="exampleCheck1">
@@ -368,6 +368,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="dist/js/base.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script src="../node_modules/linqjs/dist/linq.min.js"></script>
+
+<script src="dist/js/base.js"></script>
 
 <script>
   
@@ -384,7 +389,88 @@ scratch. This page gets rid of all links and provides the needed markup only.
     });
   });
  
+  AjaxServer(base_url+"sla/getsla",null,"get","json","Cargando...")
+            .then(function(resp){
 
+              console.log(resp)
+             FillTable("tablesla",["descripcion","cantidadHoras","estatus","fechaModificacion"],
+              resp,['delete','update','id'],['form-departamento','myModal','Eliminar']);
+
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
+ var id=0;
+function EditarData(e){
+
+  $('#myModal').modal('show');
+  var data=JSON.parse(Remove_CaracteresJson(e.target.dataset.modelo));
+  var estatus=data.estatus;
+  id=data.id;
+  if (estatus=="A") {
+    $('#exampleCheck1').prop("checked",true);
+  }
+  else
+  $('#exampleCheck1').prop("checked",false);
+
+  FillData("form-departamento",e.target.dataset.modelo,"myModal");
+}
+function Eliminar(e){
+
+  Confirmacion("Eliminar sla","¿Estás seguro que desea eliminar este sla?","info",function(r){
+if(r){
+    AjaxServer(base_url+"sla/eliminar",{Id:parseInt(e.target.dataset.id)},"post","json",
+    "Elimimando sla").then(function(resp){
+     
+        if(resp.states){
+          swal("Eliminar sla","sla eliminado con exito!","success");
+          window.location.reload();
+        }
+    
+      }).fail(function(error){
+        console.log(error);
+      ErrorInesperado();
+    })
+}
+},true,"Eliminar","Cerrar")
+}
+function guardar(){
+
+ if (id==0) {
+   
+  data={Descripcion:$('#txtdescripcion').val(),Estatus:$('#exampleCheck1').val(),"CantidadHoras":parseInt($('#txtcantidad').val())
+  ,CreadoPor:parseInt(sessionStorage.getItem("iduser"))};
+  AjaxServer(base_url+"sla/insertar",data ,"post","json","Iniciando...")
+            .then(function(resp){
+              if (resp.states) {
+               swal("Crear sla","sla creado con exito!","success");
+               window.location.reload();
+              }
+              else
+              swal("Crear sla","Error al crear","warning");
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
+ }
+ else{
+  data={Id:id,Descripcion:$('#txtdescripcion').val(),Estatus:$('#exampleCheck1').val(),"CantidadHoras":parseInt($('#txtcantidad').val())
+
+  ,ModificadoPor:parseInt(sessionStorage.getItem("iduser"))};
+  AjaxServer(base_url+"sla/actualizar",data ,"post","json","Iniciando...")
+            .then(function(resp){
+              if (resp.states) {
+               swal("Actualizar sla","sla actualizado con exito!","success");
+               window.location.reload();
+              }
+              else
+              swal("Actualizar sla","Error al actualizar sla","warning");
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
+ }
+}
 </script>
 
 </body>

@@ -320,11 +320,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <form id="form-departamento">
           <div class="form-group">
             <label for="txtnombre">Nombre del puesto</label>
-            <input type="text" name="puesto" class="form-control" id="txtnombre" placeholder="Nombre">
+            <input type="text" name="nombre" class="form-control" id="txtnombre" placeholder="Nombre">
           </div>
           <div class="form-group">
             <label for="selectdep">Nombre del departamento</label>
-            <select name="" id="selectdep" class="form-control">
+            <select name="departamentoId" id="selectdep" class="form-control">
                 <option value="0">Seleccione un departamento</option>
             </select>
           </div>
@@ -392,9 +392,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
  
   AjaxServer(base_url+"puestos/getpuestos",null,"get","json","Cargando...")
             .then(function(resp){
+
               console.log(resp)
-             /* FillTable("tablapuestos",["nombre","estatus","fechaModificacion"],
-              resp,['delete','update','id'],['form-departamento','myModal','EliminarDepartamento']);*/
+             FillTable("tablapuestos",["nombre","nombre","estatus","fechaModificacion"],
+              resp.puestos,['delete','update','id'],['form-departamento','myModal','Eliminar']);
+              RellenarSelectPicker("selectdep",resp.departamentos,"nombre",true,"id");
+
             }).fail(function(error){
               ErrorInesperado();
               console.log(error);
@@ -414,15 +417,15 @@ function EditarData(e){
 
   FillData("form-departamento",e.target.dataset.modelo,"myModal");
 }
-function EliminarDepartamento(e){
+function Eliminar(e){
 
-  Confirmacion("Eliminar departamento","¿Estás seguro que desea eliminar este departamento?","info",function(r){
+  Confirmacion("Eliminar puesto","¿Estás seguro que desea eliminar este puesto?","info",function(r){
 if(r){
-    AjaxServer(base_url+"departamento/eliminardepartamento",{Id:parseInt(e.target.dataset.id)},"post","json",
-    "Elimimando departamento").then(function(resp){
+    AjaxServer(base_url+"puestos/eliminar",{Id:parseInt(e.target.dataset.id)},"post","json",
+    "Elimimando Puesto").then(function(resp){
      
         if(resp.states){
-          swal("Eliminar Departamento","Departamento eliminado con exito!","success");
+          swal("Eliminar Puesto","Puesto eliminado con exito!","success");
           window.location.reload();
         }
     
@@ -437,31 +440,32 @@ function guardar(){
 
  if (id==0) {
    
-  data={Nombre:$('#txtnombre').val(),Estatus:$('#exampleCheck1').val(),CreadoPor:parseInt(sessionStorage.getItem("iduser"))};
-  AjaxServer(base_url+"departamento/insertardepartamento",data ,"post","json","Iniciando...")
+  data={Nombre:$('#txtnombre').val(),Estatus:$('#exampleCheck1').val(),"departamentoId":parseInt($('#selectdep').val())
+  ,CreadoPor:parseInt(sessionStorage.getItem("iduser"))};
+  AjaxServer(base_url+"puestos/insertar",data ,"post","json","Iniciando...")
             .then(function(resp){
               if (resp.states) {
-               swal("Crear Departamento","Departamento creado con exito!","success");
+               swal("Crear Puesto","Puesto creado con exito!","success");
                window.location.reload();
               }
               else
-              swal("Crear Departamento","Error al crear","warning");
+              swal("Crear Puesto","Error al crear","warning");
             }).fail(function(error){
               ErrorInesperado();
               console.log(error);
             });
  }
  else{
-  data={Id:id,Nombre:$('#txtnombre').val(),Estatus:$('#exampleCheck1').val()
+  data={Id:id,Nombre:$('#txtnombre').val(),Estatus:$('#exampleCheck1').val(),"departamentoId":parseInt($('#selectdep').val())
   ,ModificadoPor:parseInt(sessionStorage.getItem("iduser"))};
-  AjaxServer(base_url+"departamento/actualizardepartamento",data ,"post","json","Iniciando...")
+  AjaxServer(base_url+"puestos/actualizar",data ,"post","json","Iniciando...")
             .then(function(resp){
               if (resp.states) {
-               swal("Actualizar Departamento","Departamento actualizado con exito!","success");
+               swal("Actualizar Puestos","Puestos actualizado con exito!","success");
                window.location.reload();
               }
               else
-              swal("Actualizar Departamento","Error al actualizar departametno","warning");
+              swal("Actualizar Puestos","Error al actualizar puesto","warning");
             }).fail(function(error){
               ErrorInesperado();
               console.log(error);

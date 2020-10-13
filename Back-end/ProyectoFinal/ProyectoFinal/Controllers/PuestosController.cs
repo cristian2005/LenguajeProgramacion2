@@ -33,15 +33,18 @@ namespace ProyectoFinal.Controllers
             var departamentos = new List<Departamento>();
             departamentos = repositorio_departamento.GetDepartamentos();
                
-            return result;
+            return new {Puestos= result, Departamentos=departamentos };
         }
-        [HttpGet]
-        public OperationResult Delete(int id)
+        [HttpPost("eliminar")]
+        public OperationResult Delete([FromBody] Puesto puesto)
         {
-            var result = repositorio.Eliminar(id);
+            var puesto_old = repositorio.ObtenerPorId(puesto.Id);
+            puesto_old.Borrado = true;
+
+            var result = repositorio.Actualizar(puesto_old);
             return result;
         }
-        [HttpPost("insertarpuestos")]
+        [HttpPost("insertar")]
         public OperationResult Insert([FromBody] Puesto puesto)
         {
             puesto.FechaRegistro = DateTime.Now;
@@ -50,10 +53,19 @@ namespace ProyectoFinal.Controllers
             var result = repositorio.Agregar(puesto);
             return result;
         }
-        [HttpPost]
-        public OperationResult Update([FromBody] Puesto usuario)
+        [HttpPost("actualizar")]
+        public OperationResult Update([FromBody] Puesto puesto)
         {
-            var result = repositorio.Actualizar(usuario);
+            var puesto_old = repositorio.ObtenerPorId(puesto.Id);
+
+            puesto_old.FechaModificacion = DateTime.Now;
+            puesto_old.ModificadoPor = puesto.ModificadoPor;
+            puesto_old.Estatus = puesto.Estatus;
+            puesto_old.Nombre = puesto.Nombre;
+            puesto_old.DepartamentoId = puesto.DepartamentoId;
+
+
+            var result = repositorio.Actualizar(puesto_old);
             return result;
         }
     }

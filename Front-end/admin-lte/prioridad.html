@@ -199,15 +199,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="sla.html" class="nav-link">
                   <i class="nav-icon fas fa-sticky-note"></i>
                   <p>
-                    Sla
+                    Slas
                   </p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="prioridad.html" class="nav-link active">
+                <a href="prioridades.html" class="nav-link active">
                   <i class="nav-icon fas fa-list-ol"></i>
                   <p>
-                    Prioridad
+                    prioridades
                   </p>
                 </a>
               </li>
@@ -241,7 +241,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Prioridad</h1>
+            <h1 class="m-0 text-dark">prioridades</h1>
           </div><!-- /.col -->
          
         </div><!-- /.row -->
@@ -257,7 +257,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <div class="col-md-12">
             <div class="card card-primary collapsed-card">
               <div class="card-header">
-                <h3 class="card-title">Listado de prioridad</h3>
+                <h3 class="card-title">Listado de prioridades</h3>
           
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
@@ -267,11 +267,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-               <table class="table table-condensed tabla">
+               <table id="tableprioridades" class="table table-condensed tabla">
                  <thead>
                    <tr>
                      <th>Nombre</th>
-                     <th>Sla</th>
                      <th>Estatus</th>
                      <th>Fecha ult. modif.</th>
                      <th>Acciones</th>
@@ -281,7 +280,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
               <!-- /.card-body -->
               <div class="card-footer">
-                <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-outline btn-info">Agregar prioridad</button>
+                <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-outline btn-info">Agregar prioridades</button>
               </div>
             </div>
           </div>
@@ -311,7 +310,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
       <!-- Modal Header -->
       <div class="modal-header">
-        <h4 class="modal-title">Administrar sla</h4>
+        <h4 class="modal-title">Administrar prioridades</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
 
@@ -320,12 +319,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <form id="form-departamento">
           <div class="form-group">
             <label for="exampleInputEmail1">Nombre</label>
-            <input type="text" class="form-control" id="txtnombre" placeholder="Nombre">
+            <input type="text" name="nombre" class="form-control" id="txtnombre" placeholder="Nombre">
           </div>
           <div class="form-group">
-            <label for="selectsla">Sla</label>
-            <select name="sla" id="selectsla" class="form-control">
-                <option value="0">Seleccione un sla</option>
+            <label for="selectslas">Slas</label>
+            <select name="slaId" id="selectslas" class="form-control">
+                <option value="0">Seleccione un slas</option>
             </select>
           </div>
           <div class="form-check">
@@ -371,6 +370,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="dist/js/base.js"></script>
 
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script src="../node_modules/linqjs/dist/linq.min.js"></script>
+
+<script src="dist/js/base.js"></script>
+
 <script>
   
   $(function () {
@@ -386,7 +391,89 @@ scratch. This page gets rid of all links and provides the needed markup only.
     });
   });
  
+  AjaxServer(base_url+"prioridades/getprioridades",null,"get","json","Cargando...")
+            .then(function(resp){
 
+              console.log(resp)
+             FillTable("tableprioridades",["nombre","estatus","fechaModificacion"],
+              resp.prioridades,['delete','update','id'],['form-departamento','myModal','Eliminar']);
+              RellenarSelectPicker("selectslas",resp.sla,"descripcion",true,"id");
+
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
+ var id=0;
+function EditarData(e){
+
+  $('#myModal').modal('show');
+  var data=JSON.parse(Remove_CaracteresJson(e.target.dataset.modelo));
+  var estatus=data.estatus;
+  id=data.id;
+  if (estatus=="A") {
+    $('#exampleCheck1').prop("checked",true);
+  }
+  else
+  $('#exampleCheck1').prop("checked",false);
+
+  FillData("form-departamento",e.target.dataset.modelo,"myModal");
+}
+function Eliminar(e){
+
+  Confirmacion("Eliminar prioridades","¿Estás seguro que desea eliminar este prioridades?","info",function(r){
+if(r){
+    AjaxServer(base_url+"prioridades/eliminar",{Id:parseInt(e.target.dataset.id)},"post","json",
+    "Elimimando prioridades").then(function(resp){
+     
+        if(resp.states){
+          swal("Eliminar prioridades","prioridades eliminado con exito!","success");
+          window.location.reload();
+        }
+    
+      }).fail(function(error){
+        console.log(error);
+      ErrorInesperado();
+    })
+}
+},true,"Eliminar","Cerrar")
+}
+function guardar(){
+
+ if (id==0) {
+   
+  data={Nombre:$('#txtnombre').val(),Estatus:$('#exampleCheck1').val(),"SlaId":parseInt($('#selectslas').val())
+  ,CreadoPor:parseInt(sessionStorage.getItem("iduser")),ModificadoPor:parseInt(sessionStorage.getItem("iduser"))};
+  AjaxServer(base_url+"prioridades/insertar",data ,"post","json","Iniciando...")
+            .then(function(resp){
+              if (resp.states) {
+               swal("Crear prioridades","prioridades creado con exito!","success");
+               window.location.reload();
+              }
+              else
+              swal("Crear prioridades","Error al crear","warning");
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
+ }
+ else{
+  data={Id:id,Nombre:$('#txtnombre').val(),Estatus:$('#exampleCheck1').val(),"SlaId":parseInt($('#selectslas').val())
+
+  ,ModificadoPor:parseInt(sessionStorage.getItem("iduser"))};
+  AjaxServer(base_url+"prioridades/actualizar",data ,"post","json","Iniciando...")
+            .then(function(resp){
+              if (resp.states) {
+               swal("Actualizar prioridades","prioridades actualizado con exito!","success");
+               window.location.reload();
+              }
+              else
+              swal("Actualizar prioridades","Error al actualizar prioridades","warning");
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
+ }
+}
 </script>
 
 </body>
