@@ -267,7 +267,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-               <table class="table table-condensed tabla">
+               <table id="tablaincidentes" class="table table-condensed tabla">
                  <thead>
                    <tr>
                      <th>Comentario</th>
@@ -361,6 +361,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="dist/js/base.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script src="../node_modules/linqjs/dist/linq.min.js"></script>
+
+<script src="dist/js/base.js"></script>
 
 <script>
   
@@ -377,7 +382,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
     });
   });
  
+  AjaxServer(base_url+"historialincidentes/obtener",null,"get","json","Cargando...")
+            .then(function(resp){
 
+              console.log(resp)
+             FillTable("tablaincidentes",["comentario","incidenteId","estatus","fechaModificacion"],
+              resp);
+
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
 </script>
 
 </body>

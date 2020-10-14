@@ -267,7 +267,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-               <table class="table table-condensed tabla">
+               <table id="tablaincidentes" class="table table-condensed tabla">
                  <thead>
                    <tr>
                      <th>Titulo</th>
@@ -321,46 +321,51 @@ scratch. This page gets rid of all links and provides the needed markup only.
            <div class="row">
                <div class="col-md-4">
                 <label for="exampleInputEmail1">Titulo</label>
-                <input type="text" class="form-control" name="titulo" id="txtttitulo" placeholder="Nombre">
+                <input type="text" class="form-control" name="titulo" id="txttitulo" placeholder="Nombre">
                </div>
                <div class="col-md-4">
                 <label for="exampleInputEmail1">Fecha Cierre</label>
-                <input type="date" class="form-control" name="fecha" id="txtttitulo" placeholder="Fecha">
+                <input type="date" class="form-control" name="fecha" id="txtfecha" placeholder="Fecha">
                </div>
               <div class="col-md-4">
                 <label for="selectsla">Usuario Reportado</label>
-                <select name="usuario1" id="selectsla" class="form-control">
+                <select name="usuarioReporteId" id="seletcreportado" class="form-control">
                     <option value="0">Seleccione un usuario</option>
                 </select>
               </div>
            </div>
            <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label for="selectsla">Usuario Asignado</label>
-                <select name="usuario2" id="selectsla" class="form-control">
+                <select name="usuarioAsignadoId" id="selectasignado" class="form-control">
                     <option value="0">Seleccione un usuario</option>
                 </select>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label for="selectsla">Departamento</label>
-                <select name="departamento" id="selectdepartamento" class="form-control">
+                <select name="departamentoId" id="selectdepartamento" class="form-control">
                     <option value="0">Seleccione un departamento</option>
                 </select>
               </div>
-            
+              <div class="col-md-4">
+                <label for="selectsla">Prioridad</label>
+                <select name="prioridadId" id="selectprioridad" class="form-control">
+                    <option value="0">Seleccione una prioridad</option>
+                </select>
+              </div>
            </div>
            <div class="row">
             <div class="col-md-6">
                 <label for="exampleInputEmail1">Descripcion</label>
-                <textarea name="descripcion" class="form-control" id=""  rows="10"></textarea>
+                <textarea name="descripcion" class="form-control" id="txtdescripcion"  rows="10"></textarea>
                </div>
                <div class="col-md-6">
                 <label for="exampleInputEmail1">Comentario de cierre</label>
-                <textarea name="comentario" class="form-control" id=""  rows="10"></textarea>
+                <textarea name="comentarioCierre" class="form-control" id="txtcomentario"  rows="10"></textarea>
                </div>
            </div>
           <div class="form-check">
-            <input type="checkbox" name="status" class="form-check-input" id="exampleCheck1">
+            <input type="checkbox" name="estatus" class="form-check-input" id="exampleCheck1">
             <label class="form-check-label" for="exampleCheck1">Estatus</label>
           </div>
         </form>
@@ -402,6 +407,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="dist/js/base.js"></script>
 
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script src="../node_modules/linqjs/dist/linq.min.js"></script>
+
+<script src="dist/js/base.js"></script>
+
 <script>
   
   $(function () {
@@ -417,7 +428,97 @@ scratch. This page gets rid of all links and provides the needed markup only.
     });
   });
  
+  AjaxServer(base_url+"incidentes/getincidentes",null,"get","json","Cargando...")
+            .then(function(resp){
 
+              console.log(resp)
+             FillTable("tablaincidentes",["titulo","descripcion","fecha_Cierre","estatus"],
+              resp.incidentes,['delete','update','id'],['form-departamento','myModal','Eliminar']);
+              RellenarSelectPicker("seletcreportado",resp.usuarios,"nombre",true,"id");
+              RellenarSelectPicker("selectasignado",resp.usuarios,"nombre",true,"id");
+              RellenarSelectPicker("selectdepartamento",resp.departamentos,"nombre",true,"id");
+              RellenarSelectPicker("selectprioridad",resp.prioridades,"nombre",true,"id");
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
+ var id=0;
+function EditarData(e){
+
+  $('#myModal').modal('show');
+  var data=JSON.parse(Remove_CaracteresJson(e.target.dataset.modelo));
+  var estatus=data.estatus;
+  id=data.id;
+  if (estatus=="A") {
+    $('#exampleCheck1').prop("checked",true);
+  }
+  else
+  $('#exampleCheck1').prop("checked",false);
+
+  FillData("form-departamento",e.target.dataset.modelo,"myModal");
+}
+function Eliminar(e){
+
+  Confirmacion("Eliminar incidentes","¿Estás seguro que desea eliminar este incidentes?","info",function(r){
+if(r){
+    AjaxServer(base_url+"incidentes/eliminar",{Id:parseInt(e.target.dataset.id)},"post","json",
+    "Elimimando incidentes").then(function(resp){
+     
+        if(resp.states){
+          swal("Eliminar incidentes","incidentes eliminado con exito!","success");
+          window.location.reload();
+        }
+    
+      }).fail(function(error){
+        console.log(error);
+      ErrorInesperado();
+    })
+}
+},true,"Eliminar","Cerrar")
+}
+function guardar(){
+
+ if (id==0) {
+   
+  data={Titulo:$('#txttitulo').val(),Estatus:$('#exampleCheck1').val(),Descripcion:$('#txtdescripcion').val(),
+  "UsuarioReporteId":parseInt($('#seletcreportado').val()),"UsuarioAsignadoId":parseInt($('#selectasignado').val()),
+  "PrioridadId":parseInt($('#selectprioridad').val()),"DepartamentoId":parseInt($('#selectdepartamento').val()),
+  ComentarioCierre:$('#txtcomentario').val()
+  ,CreadoPor:parseInt(sessionStorage.getItem("iduser")),ModificadoPor:parseInt(sessionStorage.getItem("iduser"))};
+  AjaxServer(base_url+"incidentes/insertar",data ,"post","json","Iniciando...")
+            .then(function(resp){
+              if (resp.states) {
+               swal("Crear incidentes","incidentes creado con exito!","success");
+               window.location.reload();
+              }
+              else
+              swal("Crear incidentes","Error al crear","warning");
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
+ }
+ else{
+  data={Id:id,Titulo:$('#txttitulo').val(),Estatus:$('#exampleCheck1').val(),Descripcion:$('#txtdescripcion').val(),
+  "UsuarioReporteId":parseInt($('#seletcreportado').val()),"UsuarioAsignadoId":parseInt($('#selectasignado').val()),
+  "PrioridadId":parseInt($('#selectprioridad').val()),"DepartamentoId":parseInt($('#selectdepartamento').val()),
+  ComentarioCierre:$('#txtcomentario').val()
+  ,CreadoPor:parseInt(sessionStorage.getItem("iduser")),ModificadoPor:parseInt(sessionStorage.getItem("iduser"))};
+
+  AjaxServer(base_url+"incidentes/actualizar",data ,"post","json","Iniciando...")
+            .then(function(resp){
+              if (resp.states) {
+               swal("Actualizar incidentes","incidentes actualizado con exito!","success");
+               window.location.reload();
+              }
+              else
+              swal("Actualizar incidentes","Error al actualizar incidentes","warning");
+            }).fail(function(error){
+              ErrorInesperado();
+              console.log(error);
+            });
+ }
+}
 </script>
 
 </body>

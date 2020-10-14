@@ -18,7 +18,7 @@ namespace ProyectoFinal.Controllers
         {
             repositorio = new RepositorioDeHistorialIncidentes();
         }
-        [HttpGet]
+        [HttpGet("obtener")]
         public IEnumerable<HistorialIncidente> Get()
         {
             var parametros1 = new ParametrosDeQuery<HistorialIncidente>(1, 200);

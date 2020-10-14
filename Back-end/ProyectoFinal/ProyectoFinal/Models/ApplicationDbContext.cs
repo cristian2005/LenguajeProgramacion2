@@ -75,7 +75,7 @@ namespace ProyectoFinal.Models
 
 
             modelBuilder.Entity<UsuarioId>().HasMany(x => x.Puestos)
-              .WithOne(e => e.Usuario).HasForeignKey(x => x.CreadoPor);
+              .WithOne(e => e.Usuario).HasForeignKey(x => x.CreadoPor).OnDelete(DeleteBehavior.NoAction).IsRequired(false);
             modelBuilder.Entity<UsuarioId>().HasMany(x => x.Puesto1)
                .WithOne(e => e.Usuario1).HasForeignKey(x => x.ModificadoPor).OnDelete(DeleteBehavior.NoAction).IsRequired(false);
 
@@ -109,7 +109,7 @@ namespace ProyectoFinal.Models
               .WithOne(e => e.Departamento).HasForeignKey(x => x.DepartamentoId).OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Puesto>().HasMany(x => x.Usuarios)
-            .WithOne(e => e.Puesto).HasForeignKey(x => x.PuestoId).OnDelete(DeleteBehavior.NoAction);
+            .WithOne(e => e.Puesto).HasForeignKey(x => x.PuestoId).OnDelete(DeleteBehavior.NoAction).IsRequired(false);
 
             modelBuilder.Entity<Sla>().HasMany(x => x.Prioridades)
             .WithOne(e => e.Sla).HasForeignKey(x => x.SlaId).OnDelete(DeleteBehavior.NoAction);

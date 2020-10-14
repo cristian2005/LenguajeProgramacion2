@@ -15,7 +15,7 @@ namespace ProyectoFinal.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.8")
+                .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -231,7 +231,9 @@ namespace ProyectoFinal.Migrations
             modelBuilder.Entity("ProyectoFinal.Models.Entities.Puesto", b =>
                 {
                     b.Property<int>("PuestoId")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("Borrado")
                         .HasColumnType("bit");
@@ -265,6 +267,8 @@ namespace ProyectoFinal.Migrations
                     b.HasKey("PuestoId");
 
                     b.HasIndex("CreadoPor");
+
+                    b.HasIndex("DepartamentoId");
 
                     b.HasIndex("ModificadoPor");
 
@@ -481,19 +485,17 @@ namespace ProyectoFinal.Migrations
                     b.HasOne("ProyectoFinal.Models.Entities.UsuarioId", "Usuario")
                         .WithMany("Puestos")
                         .HasForeignKey("CreadoPor")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("ProyectoFinal.Models.Entities.Departamento", "Departamento")
+                        .WithMany("Puestos")
+                        .HasForeignKey("DepartamentoId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("ProyectoFinal.Models.Entities.UsuarioId", "Usuario1")
                         .WithMany("Puesto1")
                         .HasForeignKey("ModificadoPor")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("ProyectoFinal.Models.Entities.Departamento", "Departamento")
-                        .WithMany("Puestos")
-                        .HasForeignKey("PuestoId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ProyectoFinal.Models.Entities.Sla", b =>
@@ -515,8 +517,7 @@ namespace ProyectoFinal.Migrations
                     b.HasOne("ProyectoFinal.Models.Entities.Puesto", "Puesto")
                         .WithMany("Usuarios")
                         .HasForeignKey("PuestoId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 #pragma warning restore 612, 618
         }

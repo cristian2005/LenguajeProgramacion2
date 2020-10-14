@@ -1,4 +1,5 @@
 ﻿using ProyectoFinal.Contractos;
+using ProyectoFinal.Models;
 using ProyectoFinal.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,23 @@ namespace ProyectoFinal.Repositorios
         public void AccionesPersonalizadas(UsuarioId usuario)
         {
             throw new NotImplementedException();
+        }
+        public List<UsuarioId> GetUsuarios()
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+
+                    var result = db.Usuarios.ToList();
+                    return result;
+                }
+            }
+            catch (Exception err)
+            {
+                return null;
+            }
+
         }
     }
 }
